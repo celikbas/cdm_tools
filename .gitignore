@@ -1,3 +1,7 @@
+# git localsettings
+.git
+.gitingore
+
 *.py[cod]
 
 # C extensions
@@ -34,3 +38,7 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Editor preferences/tools
+.komodotools
+*.komodoproject
