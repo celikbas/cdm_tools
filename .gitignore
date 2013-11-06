@@ -1,6 +1,6 @@
 # git localsettings
 .git
-.gitingore
+.gitignore
 
 *.py[cod]
 

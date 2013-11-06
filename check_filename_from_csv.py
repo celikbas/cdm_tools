@@ -15,7 +15,7 @@ import glob
 reader = csv.DictReader(open('31_Ekim13CDM.txt', 'rb'), delimiter='\t')
 
 dir_log = open('dir_log.txt','w')
-#file_log = open('file_log.txt','w')
+error_log = open('error_log.txt','w')
 for row in reader:
     DIR = row.get('FileName')
     PDF = DIR + '.pdf'
@@ -45,8 +45,12 @@ for row in reader:
     else:
         message = "ERROR: File not exist: " + PDF + '\n'
         dir_log.write(message)
+        error_log.write(message)
         #print message
 
 dir_log.close()
-# file_log.close()
+error_log.close()
+
+print "All logs written to dir_log.txt file"
+print "Error logs also written to error_log.txt file"
 
