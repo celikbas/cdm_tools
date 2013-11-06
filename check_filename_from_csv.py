@@ -33,14 +33,14 @@ for row in reader:
             message = 'Folder created ' + DIR + '\n'
             dir_log.write(message)
             # print message
-    
+
         COMMD = 'pdfimages -j ' + PDF + ' ' + DIR + '/' + DIR
         os.system(COMMD)
         message = "File processed to folder: " + DIR + '\n'
         dir_log.write(message)
         files = glob.glob(DIR+'/*')
         for f in files:
-            dir_log.write(' ' + f + '\n')
+            dir_log.write('  ' + f + '\n')
         # print message
     else:
         message = "ERROR: File not exist: " + PDF + '\n'
