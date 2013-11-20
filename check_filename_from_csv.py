@@ -16,6 +16,9 @@ reader = csv.DictReader(open('31_Ekim13CDM.txt', 'rb'), delimiter='\t')
 
 dir_log = open('dir_log.txt','w')
 error_log = open('error_log.txt','w')
+fixed_csv = open('fixed.csv','wb')
+# csv_writer = csv.writer(fixed_csv, delimiter='\t', quoting=csv.QUOTE_NONE)
+
 for row in reader:
     DIR = row.get('FileName')
     PDF = DIR + '.pdf'
@@ -38,10 +41,14 @@ for row in reader:
         os.system(COMMD)
         message = "File processed to folder: " + DIR + '\n'
         dir_log.write(message)
+        # csv_writer.writerow(row)
+        #fixed_csv.writelines('\t'.join(i) + '\n' for i in row)
+        fixed_csv.write('\t'.join(map(str,row)))
+        
         files = glob.glob(DIR+'/*')
         for f in files:
-            dir_log.write('  ' + f + '\n')
-        # print message
+            dir_log.write(' ' + f + '\n')
+        print message
     else:
         message = "ERROR: File not exist: " + PDF + '\n'
         dir_log.write(message)
@@ -50,6 +57,7 @@ for row in reader:
 
 dir_log.close()
 error_log.close()
+fixed_csv.close()
 
 print "All logs written to dir_log.txt file"
 print "Error logs also written to error_log.txt file"
