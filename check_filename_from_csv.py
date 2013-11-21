@@ -12,15 +12,20 @@ import csv
 import os
 import glob
 
-reader = csv.DictReader(open('31_Ekim13CDM.txt', 'rb'), delimiter='\t')
+reader = csv.reader(open('31_Ekim13CDM.txt', 'rb'), delimiter='\t')
 
 dir_log = open('dir_log.txt','w')
 error_log = open('error_log.txt','w')
 fixed_csv = open('fixed.csv','wb')
-# csv_writer = csv.writer(fixed_csv, delimiter='\t', quoting=csv.QUOTE_NONE)
+
+header = reader.next()
+filename = header.index("FileName")
+for col in header:
+    fixed_csv.write(col + '\t')
+fixed_csv.write('\r\n')
 
 for row in reader:
-    DIR = row.get('FileName')
+    DIR = row[filename]
     PDF = DIR + '.pdf'
 
     if os.path.exists(PDF):
@@ -41,9 +46,10 @@ for row in reader:
         os.system(COMMD)
         message = "File processed to folder: " + DIR + '\n'
         dir_log.write(message)
-        # csv_writer.writerow(row)
-        #fixed_csv.writelines('\t'.join(i) + '\n' for i in row)
-        fixed_csv.write('\t'.join(map(str,row)))
+        # Creatin a new csv file:
+	for col in row:
+            fixed_csv.write(col + '\t')
+        fixed_csv.write('\r\n')
         
         files = glob.glob(DIR+'/*')
         for f in files:
