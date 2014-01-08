@@ -12,7 +12,7 @@ import csv
 import os
 import glob
 
-reader = csv.reader(open('31_Ekim13CDM.txt', 'rb'), delimiter='\t')
+reader = csv.reader(open('03-12-2013.txt', 'rb'), delimiter='\t')
 
 # creat log files
 dir_log = open('dir_log.txt','w')

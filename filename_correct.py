@@ -1,15 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" wfnr.py: Word File Name Replace """
+""" filename_correct.py: Check filenames for invalid characters and replace them."""
 
 __author__ 	= "Zeki Celikbas" 
-__copyright__ 	= "Copyright 2013, The X Project" 
+__copyright__ 	= "Copyright 2013, The cdm_tools Project" 
 __license__ 	= "GPL" 
 __version__ 	= "0.0.1" 
 __email__ 	= "celikbas@itu.edu.tr" 
 __status__ 	= "Experiment"
 
+import sys
+
+checkorcorrect = 0
+if len(sys.argv) > 1:
+	if sys.argv[1]=="yes":
+		checkorcorrect = 1
 
 # define our method
 def replace_all(text, dic):
@@ -30,14 +36,12 @@ files = filter(os.path.isfile, os.listdir('.'))
 for file in files:
 	if pattern.findall(file):
 	    print 'Rename: ' , file , ' => ', replace_all(file, reps)
-	    os.rename(file, replace_all(file, reps))
-	    count +=1
-	    
-print count , ' file name changed'
+	    if checkorcorrect == 1:
+		os.rename(file, replace_all(file, reps))
 
-"""
-# folders and files:
-for file in os.listdir('.'):
-	if pattern.findall(file):
-		print file
-"""		
+	    count +=1
+
+print count , ' file name changed!'
+if checkorcorrect == 0:
+	print 'In fact none of file name changed. If you want to change, rerun this app with the following parameter:'
+	print 'filename_correct.py yes'
