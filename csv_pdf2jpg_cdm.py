@@ -11,8 +11,19 @@ __status__      = "Experiment"
 import csv
 import os
 import glob
+import sys
 
-reader = csv.reader(open('03-12-2013.txt', 'rb'), delimiter='\t')
+if len(sys.argv) > 1:
+    if os.path.isfile(sys.argv[1]):
+        CSVFILE = sys.argv[1]
+    else:
+        print "csv file in not in disk! Please specify a file"
+        sys.exit()
+else:
+    print "no csv file provided. Please specify a file"
+    sys.exit()
+        
+reader = csv.reader(open(CSVFILE, 'rb'), delimiter='\t')
 
 # creat log files
 dir_log = open('dir_log.txt','w')
@@ -29,8 +40,12 @@ fixed_csv.write(headerLine + '\r\n')
 
 for row in reader:
     #find out the pdf file from csv record.
-    DIR = row[filename]
-    PDF = DIR + '.pdf'
+    PDF = row[filename]
+    if '.pdf' in PDF:
+        DIR = os.path.splitext(PDF)[0]
+    else:
+        DIR = PDF
+        PDF = PDF + '.pdf'
 
     # check if the pdf file exist in folder:
     if os.path.exists(PDF):

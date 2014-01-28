@@ -11,3 +11,8 @@ conv_pdf-img.bash	: Script usefull extract eBooks pdf pages as images to the sam
 
 filename_correct.py	: Check filenames for invalid characters and replace them. Currently support only Turkish characters but it can be improved.
 
+NOTE:
+to remove all folders in current directory use this command:
+$ rm -R `ls -1 -d */`
+
+
