@@ -3,7 +3,7 @@ cdm_tools
 
 Contentdm Tools
 
-All files in this directory are usefull for digitalisation.
+All files in this directory are useful for digitalisation.
 
 csv_pdf2jpg_cdm.py	: This script read tab delimeter file compare if pdf file exist then extract all images to a new folder same name as pdf file
 
