@@ -1,4 +1,5 @@
 #!/bin/bash
+# prerequisite software: imagemagick 
 
 # define usage function
 usage()
@@ -86,7 +87,7 @@ echo OCR: $OCR_ENABLED
 echo -e "\n"
 echo "Press any key to continue. Press n to exit [Y/n]"
 read -n1 -t10 ANSWER
-if [$ANSWER="n"]; then
+if [$ANSWER == "n"]; then
 	exit
 fi
 
