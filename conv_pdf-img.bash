@@ -55,7 +55,7 @@ else
 fi
 
 # Test if the loop defined 
-if [ $COUNTER -gt 0 ]; then
+if [ $COUNTER > 0 ]; then
 	MAXATTEMPT=$COUNTER
 else
         MAXATTEMPT=2
@@ -87,7 +87,7 @@ echo OCR: $OCR_ENABLED
 echo -e "\n"
 echo "Press any key to continue. Press n to exit [Y/n]"
 read -n1 -t10 ANSWER
-if [$ANSWER == "n"]; then
+if [ $ANSWER == "n" ]; then
 	exit
 fi
 
