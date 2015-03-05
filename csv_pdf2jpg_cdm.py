@@ -6,7 +6,7 @@ __copyright__   = "Copyright 2013, cdm_tools Project"
 __license__     = "GPL"
 __version__     = "0.0.1"
 __email__       = "celikbas@itu.edu.tr"
-__status__      = "Experiment"
+__status__      = "Experimental"
 
 import csv
 import os
@@ -17,24 +17,24 @@ if len(sys.argv) > 1:
     if os.path.isfile(sys.argv[1]):
         CSVFILE = sys.argv[1]
     else:
-        print "csv file in not in disk! Please specify a file"
+        print "csv file does not exist! Please specify a file"
         sys.exit()
 else:
-    print "no csv file provided. Please specify a file"
+    print "no csv file was provided. Please specify a file"
     sys.exit()
         
 reader = csv.reader(open(CSVFILE, 'rb'), delimiter='\t')
 
-# creat log files
+# create log files
 dir_log = open('dir_log.txt','w')
 error_log = open('error_log.txt','w')
 fixed_csv = open('fixed.csv','wb')
 
-# Find the location of coloumn includes the pdf file names.
+# Find the location of column that includes the pdf file names.
 header = reader.next()
 filename = header.index("FileName")
 
-#write header line to the fixed csv file as first line.
+#write header line to the fixed csv file as the first line.
 headerLine = '\t'.join(map(str, header))
 fixed_csv.write(headerLine + '\r\n')
 
@@ -44,33 +44,49 @@ for row in reader:
     if '.pdf' in PDF:
         DIR = os.path.splitext(PDF)[0]
     else:
-        DIR = PDF
+        DIR1 = PDF
+        DIR = PDF + "/scans"
         PDF = PDF + '.pdf'
 
-    # check if the pdf file exist in folder:
+    # check if the pdf file exists in the folder:
     if os.path.exists(PDF):
-        # if this file proceesed befor the directory must be created. Empty it!
+        # if this file was processed before the directory must be 
+        # created. Empty it!
         if os.path.exists(DIR):
             files = glob.glob(DIR+'/*')
             for f in files:
                 os.remove(f)
 
-            message = "DIRECTORY EXIST. Old files removed: " + DIR + '\n'
+            message = "DIRECTORY EXISTS. Old files removed: " + DIR + '\n'
             dir_log.write(message)
         else:
-            # if not create the folder with the pdf name:
-            os.mkdir(DIR)
-            message = 'Folder created ' + DIR + '\n'
+            # Create the folder with the pdf name:
+            os.mkdir(DIR1)
+            os.mkdir(DIR1+"/scans")
+            message = 'Folder created ' + DIR1 + '\n'
             dir_log.write(message)
             # print message
 
-        # now time to proceed pdf file:
-        COMMD = 'pdfimages -j ' + PDF + ' ' + DIR + '/' + DIR
-        os.system(COMMD)
-        message = "File processed to folder: " + DIR + '\n'
+        # now time to proceed to the pdf file:
+        # COMMD = 'pdfimages -j ' + PDF + ' ' + DIR + '/'
+        # convert -density $DENSITY -quality $QUALITY $FILE $NEWDIR/scans/page_%03d.jpg
+        density = 200
+        quality = 85
+        files = glob.glob('*.pdf')
+        for f in files:
+            CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg"%(density, quality, f, DIR,"%03d")
+            # print CMD
+            os.system(CMD)
+            files2 = glob.glob(DIR+"/*")
+            # Adding watermark to all images processed from the PDF file.
+            for f2 in files2:
+                CMD2 = "composite -dissolve 10 -gravity southeast itulogo_grey226.png %s %s"%(f2, f2)
+                os.system(CMD2)
+                
+        message = "Files processed in the folder: " + DIR + '\n'
         dir_log.write(message)
-
-        # Creatin a new csv file with the corresponding csv record+folder.
+        
+        # Creating a new csv file with the corresponding csv record+folder.
         headerLine = '\t'.join(map(str, row))
         fixed_csv.write(headerLine + '\r\n')
         
@@ -79,7 +95,7 @@ for row in reader:
             dir_log.write(' ' + f + '\n')
         print message
     else:
-        message = "ERROR: File not exist: " + PDF + '\n'
+        message = "ERROR: File does not exist: " + PDF + '\n'
         dir_log.write(message)
         error_log.write(message)
         #print message
