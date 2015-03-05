@@ -73,7 +73,7 @@ for row in reader:
         density = 200
         quality = 85
         files = glob.glob('*.pdf')
-        print "The PDF file is split into several pages and watermark image is added..."
+        print "The PDF file %s is being split into several pages and watermark image is being added..."%(DIR1+".pdf")
         for f in files:
             CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg"%(density, quality, f, DIR,"%03d")
             # print CMD
