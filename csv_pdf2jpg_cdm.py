@@ -4,9 +4,9 @@
 __author__      = "Zeki Celikbas"
 __copyright__   = "Copyright 2013, cdm_tools Project"
 __license__     = "GPL"
-__version__     = "0.0.1"
+__version__     = "0.0.2"
 __email__       = "celikbas@itu.edu.tr"
-__status__      = "Experimental"
+__status__      = "Working"
 
 import csv
 import os
@@ -30,7 +30,7 @@ dir_log = open('dir_log.txt','w')
 error_log = open('error_log.txt','w')
 fixed_csv = open('fixed.csv','wb')
 
-# Find the location of column that includes the pdf file names.
+# Find the location of the column that includes the pdf file names.
 header = reader.next()
 filename = header.index("FileName")
 
@@ -57,8 +57,7 @@ for row in reader:
             for f in files:
                 os.remove(f)
 
-            message = "DIRECTORY EXISTS. Old files removed: " + DIR +\
-             '\n'
+            message = "DIRECTORY EXISTS. Old files removed: " + DIR + '\n'
             dir_log.write(message)
         else:
             # Create the folder with the pdf's name:
@@ -76,10 +75,10 @@ for row in reader:
         quality = 85
         files = glob.glob('*.pdf')
         print "The PDF file %s is being split into several pages and \
-        watermark image is being added..."%(DIR1+".pdf")
+watermark image is being added..."%(DIR1+".pdf")
         for f in files:
             CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg"\
-            %(density, quality, f, DIR,"%03d")
+%(density, quality, f, DIR,"%03d")
             # print CMD
             os.system(CMD)
             files2 = glob.glob(DIR+"/*")
@@ -87,10 +86,10 @@ for row in reader:
             #file.
             for f2 in files2:
                 CMD2 = "composite -dissolve 10 -gravity southeast \
-                itulogo_grey226.png %s %s"%(f2, f2)
+itulogo_grey226.png %s %s"%(f2, f2)
                 os.system(CMD2)
                 
-        message = "Files processed in the folder: " + DIR + '\n'
+        message = "Files were processed in the folder: " + DIR + '\n'
         dir_log.write(message)
         
         # Creating a new csv file with the corresponding csv
