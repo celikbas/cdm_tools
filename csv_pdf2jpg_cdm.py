@@ -17,10 +17,10 @@ if len(sys.argv) > 1:
     if os.path.isfile(sys.argv[1]):
         CSVFILE = sys.argv[1]
     else:
-        print "csv file does not exist! Please specify a file"
+        print "csv file does not exist! Please specify a file."
         sys.exit()
 else:
-    print "no csv file was provided. Please specify a file"
+    print "no csv file was provided. Please specify a file."
     sys.exit()
         
 reader = csv.reader(open(CSVFILE, 'rb'), delimiter='\t')
@@ -50,17 +50,18 @@ for row in reader:
 
     # check if the pdf file exists in the folder:
     if os.path.exists(PDF):
-        # if this file was processed before the directory must be 
-        # created. Empty it!
+        # if this file was processed before, the directory must be 
+        # emptied!
         if os.path.exists(DIR):
             files = glob.glob(DIR+'/*')
             for f in files:
                 os.remove(f)
 
-            message = "DIRECTORY EXISTS. Old files removed: " + DIR + '\n'
+            message = "DIRECTORY EXISTS. Old files removed: " + DIR +\
+             '\n'
             dir_log.write(message)
         else:
-            # Create the folder with the pdf name:
+            # Create the folder with the pdf's name:
             os.mkdir(DIR1)
             os.mkdir(DIR1+"/scans")
             message = 'Folder created ' + DIR1 + '\n'
@@ -69,25 +70,31 @@ for row in reader:
 
         # now time to proceed to the pdf file:
         # COMMD = 'pdfimages -j ' + PDF + ' ' + DIR + '/'
-        # convert -density $DENSITY -quality $QUALITY $FILE $NEWDIR/scans/page_%03d.jpg
+        # convert -density $DENSITY -quality $QUALITY $FILE $NEWDIR/
+        # scans/page_%03d.jpg
         density = 200
         quality = 85
         files = glob.glob('*.pdf')
-        print "The PDF file is split into several pages and watermark image is added..."
+        print "The PDF file %s is being split into several pages and \
+        watermark image is being added..."%(DIR1+".pdf")
         for f in files:
-            CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg"%(density, quality, f, DIR,"%03d")
+            CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg"\
+            %(density, quality, f, DIR,"%03d")
             # print CMD
             os.system(CMD)
             files2 = glob.glob(DIR+"/*")
-            # Adding watermark to all images processed from the PDF file.
+            # Adding watermark to all images processed from the PDF
+            #file.
             for f2 in files2:
-                CMD2 = "composite -dissolve 10 -gravity southeast itulogo_grey226.png %s %s"%(f2, f2)
+                CMD2 = "composite -dissolve 10 -gravity southeast \
+                itulogo_grey226.png %s %s"%(f2, f2)
                 os.system(CMD2)
                 
         message = "Files processed in the folder: " + DIR + '\n'
         dir_log.write(message)
         
-        # Creating a new csv file with the corresponding csv record+folder.
+        # Creating a new csv file with the corresponding csv
+        # record+folder.
         headerLine = '\t'.join(map(str, row))
         fixed_csv.write(headerLine + '\r\n')
         
