@@ -12,7 +12,8 @@ import csv
 import os
 import glob
 import sys
-
+from time import time
+zaman_baslangic = time()
 if len(sys.argv) > 1:
     if os.path.isfile(sys.argv[1]):
         CSVFILE = sys.argv[1]
@@ -41,19 +42,26 @@ fixed_csv.write(headerLine + '\r\n')
 for row in reader:
     #find out the pdf file from csv record.
     PDF = row[filename]
+    PDF = PDF.strip()
+
+    # DIR  = pdf dizin ismi
+    # DIR1 = pdf'in dizin ismi + /scan dizini
+    # PDF  = tüm dosyanın ismi
+
     if '.pdf' in PDF:
-        DIR = os.path.splitext(PDF)[0]
+        DIR = DIR1 = os.path.splitext(PDF)[0]
+        PDF = DIR + '.pdf'
+        DIR1 = DIR + "/scans"
     else:
-        DIR1 = PDF
-        DIR = PDF + "/scans"
-        PDF = PDF + '.pdf'
+        DIR = PDF
+        DIR1 = DIR + "/scans"
 
     # check if the pdf file exists in the folder:
     if os.path.exists(PDF):
         # if this file was processed before, the directory must be 
         # emptied!
-        if os.path.exists(DIR):
-            files = glob.glob(DIR+'/*')
+        if os.path.exists(DIR1):
+            files = glob.glob(DIR1+'/*')
             for f in files:
                 os.remove(f)
 
@@ -61,11 +69,14 @@ for row in reader:
             dir_log.write(message)
         else:
             # Create the folder with the pdf's name:
+            os.mkdir(DIR) #bunu ilk defadan sonra yapmıyor...
             os.mkdir(DIR1)
-            os.mkdir(DIR1+"/scans")
-            message = 'Folder created ' + DIR1 + '\n'
+            message = 'Folder created: ' + DIR1 + '\n'
+            print "DIR1: ",DIR1
+            print "DIR: ",DIR
+            print "PDF: ",PDF
             dir_log.write(message)
-            # print message
+            print message
 
         # now time to proceed to the pdf file:
         # COMMD = 'pdfimages -j ' + PDF + ' ' + DIR + '/'
@@ -73,22 +84,19 @@ for row in reader:
         # scans/page_%03d.jpg
         density = 200
         quality = 85
-        files = glob.glob('*.pdf')
-        print "The PDF file %s is being split into several pages and \
-watermark image is being added..."%(DIR1+".pdf")
-        for f in files:
-            CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg"\
-%(density, quality, f, DIR,"%03d")
-            # print CMD
-            os.system(CMD)
-            files2 = glob.glob(DIR+"/*")
-            # Adding watermark to all images processed from the PDF
-            #file.
-            for f2 in files2:
-                CMD2 = "composite -dissolve 10 -gravity southeast \
-itulogo_grey226.png %s %s"%(f2, f2)
-                os.system(CMD2)
-                
+        CMD = "convert -density %s -quality %s  %s %s/page_%s.jpg" %(density, quality, PDF, DIR1, "%03d") #ikinci döngüde DIR1 değişmiyor...
+        print CMD
+        os.system(CMD)
+            
+        files2 = glob.glob(DIR1+"/*")
+        # Adding watermark to all images processed from the PDF
+        #file.
+        print "composite -dissolve 10 -gravity southeast itulogo_grey226.png '%s %s'"
+        for f2 in files2:
+            CMD2 = "composite -dissolve 10 -gravity southeast itulogo_grey226.png %s %s"%(f2, f2)
+            print CMD2
+            os.system(CMD2)
+        
         message = "Files were processed in the folder: " + DIR + '\n'
         dir_log.write(message)
         
@@ -100,16 +108,18 @@ itulogo_grey226.png %s %s"%(f2, f2)
         files = glob.glob(DIR+'/*')
         for f in files:
             dir_log.write(' ' + f + '\n')
-        print message
+        #print message
     else:
         message = "ERROR: File does not exist: " + PDF + '\n'
         dir_log.write(message)
         error_log.write(message)
         #print message
-
 dir_log.close()
 error_log.close()
 fixed_csv.close()
-
+zaman_bitis = time()
+print "Total seconds for execution of this program: %s"%(int(zaman_bitis-\
+zaman_baslangic))
 print "All logs written to dir_log.txt file"
 print "Error logs also written to error_log.txt file"
+print "*"*100
